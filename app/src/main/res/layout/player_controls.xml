@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/controlsRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="0">
+
+    <!-- Bottom gradient -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/controls_gradient"/>
+
+    <!-- PLAYLIST — hidden by default, shown when title tapped -->
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/playlistContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="114dp"
+        android:visibility="gone"
+        android:alpha="0"
+        android:translationY="20dp"
+        android:scaleX="0.98"
+        android:scaleY="0.98"
+        app:blurRadius="4dp"
+        app:blurOverlayColor="@color/blur_bg">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlistRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="135dp"
+            android:orientation="horizontal"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </eightbitlab.com.blurview.BlurView>
+
+    <!-- TITLE BAR — tappable, toggles playlist -->
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/titleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="64dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:blurRadius="4dp"
+        app:blurOverlayColor="@color/blur_bg">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:gravity="center_vertical"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:text="Video player plyr.io 👍"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:singleLine="true"/>
+
+    </eightbitlab.com.blurview.BlurView>
+
+    <!-- CONTROLS BAR — 11 buttons, transparent background -->
+    <LinearLayout
+        android:id="@+id/controlsBar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageButton android:id="@+id/btnRewind"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_rewind"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Rewind"/>
+
+        <ImageButton android:id="@+id/btnPlayPause"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_play"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Play"/>
+
+        <ImageButton android:id="@+id/btnForward"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_forward"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Forward"/>
+
+        <androidx.media3.ui.DefaultTimeBar
+            android:id="@+id/timeBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:played_color="@color/progress_played"
+            app:buffered_color="@color/progress_buffered"
+            app:unplayed_color="@color/progress_unplayed"
+            app:scrubber_color="@color/white"
+            app:scrubber_enabled_size="12dp"
+            app:scrubber_disabled_size="8dp"
+            app:scrubber_dragged_size="16dp"/>
+
+        <TextView android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="0:00 / 0:00"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"/>
+
+        <ImageButton android:id="@+id/btnMute"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_volume"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Mute"/>
+
+        <ImageButton android:id="@+id/btnCaptions"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_captions_off"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Captions"/>
+
+        <ImageButton android:id="@+id/btnSettings"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_settings"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Settings"/>
+
+        <ImageButton android:id="@+id/btnPip"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_pip"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="PiP"/>
+
+        <ImageButton android:id="@+id/btnResize"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_resize"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Resize"/>
+
+        <ImageButton android:id="@+id/btnFullscreen"
+            android:layout_width="32dp" android:layout_height="32dp"
+            android:src="@drawable/ic_fullscreen_enter"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#FFFFFF" android:scaleType="fitCenter"
+            android:contentDescription="Fullscreen"/>
+
+    </LinearLayout>
+
+</FrameLayout>

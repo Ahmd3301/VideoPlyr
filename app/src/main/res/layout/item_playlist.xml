@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eightbitlab.com.blurview.BlurView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardBlur"
+    android:layout_width="240dp"
+    android:layout_height="135dp"
+    android:layout_marginEnd="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:blurRadius="4dp"
+    app:blurOverlayColor="@color/blur_bg">
+
+    <TextView
+        android:id="@+id/itemTitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"/>
+
+</eightbitlab.com.blurview.BlurView>

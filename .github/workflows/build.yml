@@ -1,0 +1,144 @@
+name: Build VideoPlyr APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Generate Gradle Wrapper
+        run: |
+          gradle wrapper --gradle-version 8.4 --distribution-type bin
+          chmod +x gradlew
+
+      - name: Extract Plyr SVG Icons with Material Fallback
+        run: |
+          python3 - <<'PYEOF'
+          import urllib.request, pathlib, xml.etree.ElementTree as ET
+
+          try:
+              urllib.request.urlretrieve("https://cdn.plyr.io/3.8.4/plyr.svg", "/tmp/plyr.svg")
+              svg_text = pathlib.Path("/tmp/plyr.svg").read_text()
+              plyr_available = True
+          except:
+              plyr_available = False
+              svg_text = ""
+
+          out = pathlib.Path("app/src/main/res/drawable")
+          out.mkdir(parents=True, exist_ok=True)
+
+          icons = {
+              "plyr-play": "ic_play",
+              "plyr-pause": "ic_pause",
+              "plyr-rewind": "ic_rewind",
+              "plyr-fast-forward": "ic_forward",
+              "plyr-muted": "ic_mute",
+              "plyr-volume": "ic_volume",
+              "plyr-captions-on": "ic_captions_on",
+              "plyr-captions-off": "ic_captions_off",
+              "plyr-settings": "ic_settings",
+              "plyr-pip": "ic_pip",
+              "plyr-fullscreen-enter": "ic_fullscreen_enter",
+              "plyr-fullscreen-exit": "ic_fullscreen_exit",
+          }
+
+          material = {
+              "ic_play": "M8,5.14V19.14L19,12.14L8,5.14Z",
+              "ic_pause": "M6,19H10V5H6V19M14,5V19H18V5H14Z",
+              "ic_rewind": "M11.5,12L22,6V18L11.5,12M2,18H6V6H2V18M6,6V18L16.5,12L6,6Z",
+              "ic_forward": "M13,6V18L2.5,12M22,6H18V18H22V6M18,18V6L7.5,12L18,18Z",
+              "ic_mute": "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.76 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.76 16.5,12Z",
+              "ic_volume": "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.76 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z",
+              "ic_captions_on": "M20,4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6C22,4.9 21.1,4 20,4M20,18H4V6H20V18M6,10H8V12H6V10M6,14H14V16H6V14M16,14H18V16H16V14M10,10H18V12H10V10Z",
+              "ic_captions_off": "M20,4H4C2.9,4 2,4.9 2,6V18C2,19.1 2.9,20 4,20H20C21.1,20 22,19.1 22,18V6C22,4.9 21.1,4 20,4M20,18H4V6H20V18M6,10H8V12H6V10M6,14H14V16H6V14M16,14H18V16H16V14M10,10H18V12H10V10M2,2L22,22L20.59,23.41L1.17,4L2,2Z",
+              "ic_settings": "M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z",
+              "ic_pip": "M19,11H11V17H19V11M21,3H3C1.9,3 1,3.9 1,5V19C1,20.1 1.9,21 3,21H21C22.1,21 23,20.1 23,19V5C23,3.9 22.1,3 21,3M21,19.01H3V4.99H21V19.01Z",
+              "ic_fullscreen_enter": "M7,14H5V19H10V17H7V14M5,10H7V7H10V5H5V10M17,17H14V19H19V14H17V17M14,5V7H17V10H19V5H14Z",
+              "ic_fullscreen_exit": "M5,16H8V19H10V14H5V16M8,8H5V10H10V5H8V8M14,19H16V16H19V14H14V19M16,8V5H14V10H19V8H16Z",
+              "ic_resize": "M1,1V6H3V3H6V1H1M18,1V3H21V6H23V1H18M3,18H1V23H6V21H3V18M21,21H18V23H23V18H21V21",
+          }
+
+          extracted = set()
+
+          if plyr_available:
+              try:
+                  ns = {"svg": "http://www.w3.org/2000/svg"}
+                  tree = ET.fromstring(svg_text)
+                  for sym_id, fname in icons.items():
+                      sym = tree.find(f'.//svg:symbol[@id="{sym_id}"]', ns)
+                      if sym is None: continue
+                      vb = sym.get("viewBox", "0 0 18 18").split()
+                      w, h = vb[2], vb[3]
+                      paths = [f'    <path android:fillColor="#FFFFFF" android:pathData="{e.get("d")}"/>'
+                               for e in sym.iter() if e.tag.split("}")[-1] == "path" and e.get("d")]
+                      if not paths: continue
+                      xml = f'''<?xml version="1.0" encoding="utf-8"?>
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="18dp" android:height="18dp"
+              android:viewportWidth="{w}" android:viewportHeight="{h}">
+          {chr(10).join(paths)}
+          </vector>'''
+                      (out / f"{fname}.xml").write_text(xml)
+                      extracted.add(fname)
+                      print(f"PLYR_OK: {fname}")
+              except Exception as e:
+                  print(f"PLYR_PARSE_ERROR: {e}")
+
+          # Fallback: Material Icons for any missing
+          for fname, path_data in material.items():
+              if fname not in extracted:
+                  xml = f'''<?xml version="1.0" encoding="utf-8"?>
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="18dp" android:height="18dp"
+              android:viewportWidth="24" android:viewportHeight="24">
+              <path android:fillColor="#FFFFFF" android:pathData="{path_data}"/>
+          </vector>'''
+                  (out / f"{fname}.xml").write_text(xml)
+                  print(f"MATERIAL_FALLBACK: {fname}")
+
+          print("ICONS_DONE")
+          PYEOF
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('**/*.gradle.kts', 'gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VideoPlyr-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: "VideoPlyr Build #${{ github.run_number }}"
+          body: |
+            ## 📥 Download APK
+            Tap `app-debug.apk` below — install directly on your device.
+            Commit: ${{ github.sha }}
+          files: app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print download URL
+        run: |
+          echo "✅ APK READY:"
+          echo "https://github.com/${{ github.repository }}/releases/tag/build-${{ github.run_number }}"

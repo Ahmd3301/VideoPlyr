@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blur_bg">#1FFFFFFF</color>
+    <color name="blur_bg_active">#40FFFFFF</color>
+    <color name="progress_played">#FFFFFFFF</color>
+    <color name="progress_buffered">#66FFFFFF</color>
+    <color name="progress_unplayed">#33FFFFFF</color>
+
+    <style name="FullscreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:background">#000000</item>
+    </style>
+</resources>
