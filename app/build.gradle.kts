@@ -38,5 +38,5 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
 
     // Blur
-    implementation("com.github.Dimezis:BlurView:version-2.0.3")
+    implementation("com.github.Dimezis:BlurView:2.0.3")
 }
